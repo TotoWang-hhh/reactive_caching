@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools >= 61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reactive_caching"
+version = "0.1.0"
+authors = [
+  {name = "rgzz666", email = "tt1224@hotmail.com"},
+]
+description = "Provides caching for class properties."
+readme = "README.md"
+keywords = [
+    "caching", 
+    "cache", 
+    "reactive", 
+    "property", 
+    "attribute", 
+    "attr", 
+    "performance", 
+    "something new", 
+    "something interesting", 
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "License :: OSI Approved :: Apache Software License",
+]
+license = "Apache-2.0"
+dependencies = []
+requires-python = ">= 3.10"
+
+[project.urls]
+Repository = "https://github.com/totowang-hhh/properties_caching.git"
+"Author's Site" = "https://rgzz666.top"
