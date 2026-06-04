@@ -107,4 +107,4 @@ For questions in usage or other discussions, use GitHub Discussions.
 
 **That's all, Good luck!**
 
-(C) 2026 rgzz666, licensed under Apache License 2.0, see [Copyright]\(#Copyright) section for more.
+(C) 2026 rgzz666, licensed under Apache License 2.0, see [Copyright](#Copyright) section for more.
