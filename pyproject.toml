@@ -36,5 +36,5 @@ dependencies = []
 requires-python = ">= 3.10"
 
 [project.urls]
-Repository = "https://github.com/totowang-hhh/properties_caching.git"
+Repository = "https://github.com/totowang-hhh/reactive_caching.git"
 "Author's Site" = "https://rgzz666.top"
