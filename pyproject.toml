@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "reactive_caching"
-version = "0.1.1"
+dynamic = ["version"]
 authors = [
   {name = "rgzz666", email = "tt1224@hotmail.com"},
 ]
-description = "Provides caching for class properties."
+description = "Caching module for class properties, with automatic invalidation based on attribute changes."
 readme = "README.md"
 keywords = [
     "caching", 
@@ -36,5 +36,11 @@ dependencies = []
 requires-python = ">= 3.10"
 
 [project.urls]
-Repository = "https://github.com/totowang-hhh/reactive_caching.git"
+Repository = "https://github.com/totowang-hhh/reactive_caching/"
 "Author's Site" = "https://rgzz666.top"
+
+[tool.setuptools]
+packages = ["reactive_caching"]
+
+[tool.setuptools.dynamic]
+version = {attr = "reactive_caching.__version__"}

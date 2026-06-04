@@ -1,4 +1,4 @@
-"""Caching module for class properties, with auto invalidation."""
+"""Caching module for class properties, with automatic invalidation based on attribute changes."""
 
 # Copyright 2026 rgzz666
 # 
@@ -19,6 +19,9 @@ from __future__ import annotations as _
 import typing as _typing
 
 import warnings as _warnings
+
+
+__version__ = "0.1.1"
 
 
 class CachedClass():
