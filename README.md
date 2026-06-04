@@ -79,7 +79,7 @@ If a cached object is no longer needed, you may use `destroy_cache()` to free up
 
 ## Copyright
 
-```markdown
+```
    Copyright 2026 rgzz666
 
    Licensed under the Apache License, Version 2.0 (the "License");
@@ -107,4 +107,4 @@ For questions in usage or other discussions, use GitHub Discussions.
 
 **That's all, Good luck!**
 
-(C) 2026 rgzz666, licensed under Apache License 2.0
+(C) 2026 rgzz666, licensed under Apache License 2.0, see [Copyright]\(#Copyright) section for more.
