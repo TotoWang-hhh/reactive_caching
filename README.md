@@ -2,13 +2,15 @@
 
 > 2026 by rgzz666
 >
-> v0.1.0
+> v0.1.1
+>
+> [GitHub](https://github.com/TotoWang-hhh/reactive_caching) | [PyPI](https://pypi.org/project/reactive-caching/)
+
+**Reactive Caching is a Python module providing the ability to cache properties of a class, and automatically invalidate them on specified rules of changes in attributes.** This can avoid calculating the property everytime when calling it and keeping the data up to date.
 
 ```bash
 pip3 install reactive_caching
 ```
-
-**Reactive Caching is a Python module providing the ability to cache properties of a class, and automatically invalidate them on specified rules of changes in attributes.** This can avoid calculating the property everytime when calling it and keeping the data up to date.
 
 ## Usage
 
