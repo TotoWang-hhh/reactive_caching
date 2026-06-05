@@ -25,7 +25,7 @@ import reactive_caching
 or if you prefer to directly use the contents:
 
 ```python
-from reactive_caching import CachedClass
+from reactive_caching import CachedClass, cached_property
 ```
 
 Note that the latter will be used as the example in the folowing guide.
@@ -57,7 +57,7 @@ class Rectangle(CachedClass):
         self.height: int = 10
     ...
 
-    @Rectangle.cached_property(watched_attrs = ["width", "height:])
+    @cached_property(watched_attrs = ["width", "height:])
     def area(self) -> int:
         ...
         return self.width * self.height
