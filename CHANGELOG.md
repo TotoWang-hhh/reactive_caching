@@ -2,7 +2,14 @@
 
 ## 0.2.0 (Beta)
 
-...
+### Added
+
+- Functionality test script.
+
+### Changed
+
+- Changed `reactive_caching.CachedClass.cached_property()` decorator factory to `reactive_caching.cached_property()` to make things work.
+- Changed rules specifying routine, from adding record to class directly to adding the record to the function, then detect them on class initialization. This is because the class cannot be accessed when using the decorator factory.
 
 ## 0.1.1 (Beta, Recalled)
 

@@ -14,24 +14,24 @@ class Rectangle(reactive_caching.CachedClass):
         time.sleep(0.5)
         return self.width * self.height
 
-    def timed_get_area(self) -> tuple[int, float]:
-        start_time = time.perf_counter()
-        area = self.area
-        end_time = time.perf_counter()
-        duration = end_time - start_time
-        return area, duration
-
     def _on_cache_dirty(self, prop_name: str) -> None:
         print("Cache of area is now dirty! EWW!")
 
 
+def timed_get_area(rect) -> tuple[int, float]:
+        start_time = time.perf_counter()
+        area = rect.area
+        end_time = time.perf_counter()
+        duration = end_time - start_time
+        return area, duration
+
 def print_result(test_no: int, rect: Rectangle, area: int, exe_time: float):
-    exe_time = round(exe_time, 2)
+    # exe_time = round(exe_time, 3)
     correct = rect.width * rect.height
     print(
         f"Test {test_no}: {rect.width=}, {rect.height=}, "
         f"{area=} ({"Pass" if area == correct else "Fail"}), "
-        f"{exe_time=} ({"Cached" if exe_time < 0.5 else "Calced"})"
+        f"{exe_time=:.3f} ({"Cached" if exe_time < 0.5 else "Calced"})"
         )
 
 
@@ -49,12 +49,12 @@ rect = Rectangle()
 
 print(f"{rect._cached_rules=}")
 
-area, exe_time = rect.timed_get_area()
+area, exe_time = timed_get_area(rect)
 print_result(1, rect, area, exe_time)
 
-area, exe_time = rect.timed_get_area()
+area, exe_time = timed_get_area(rect)
 print_result(2, rect, area, exe_time)
 
 rect.width = 30
-area, exe_time = rect.timed_get_area()
+area, exe_time = timed_get_area(rect)
 print_result(3, rect, area, exe_time)

@@ -21,7 +21,7 @@ import typing as _typing
 import warnings as _warnings
 
 
-__version__ = "0.1.1"
+__version__ = "0.2.0"
 
 
 class CachedClass():
