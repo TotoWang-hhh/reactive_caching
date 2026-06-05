@@ -2,7 +2,7 @@
 
 > 2026 by rgzz666
 >
-> Latest: v0.2.0 (Beta)
+> Latest: v0.2.1 (Beta)
 >
 > [GitHub](https://github.com/TotoWang-hhh/reactive_caching) | [PyPI](https://pypi.org/project/reactive-caching/)
 

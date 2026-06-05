@@ -2,6 +2,12 @@
 
 ## 0.2.0 (Beta)
 
+### Changed
+
+- Add check of cache system alive state when `__setattr__` to prevent errors.
+
+## 0.2.0 (Beta)
+
 ### Added
 
 - Functionality test script.

@@ -21,7 +21,7 @@ import typing as _typing
 import warnings as _warnings
 
 
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 
 class CachedClass():
@@ -79,8 +79,11 @@ class CachedClass():
     def __setattr__(self, name: str, value: _typing.Any) -> None:
         """Set attr and update cache dirty state."""
         super().__setattr__(name, value)
+        if not hasattr(self, "_cache_alive"):
+            return
+        if not self._cache_alive:
+            return
         if name in [ # Ignore names used by caching system
-            "_cache_initialized", 
             "_cached_rules", 
             "_cache_data", 
             "_cache_dirty_state", 
