@@ -15,7 +15,10 @@ class Rectangle(reactive_caching.CachedClass):
         return self.width * self.height
 
     def _on_cache_dirty(self, prop_name: str) -> None:
-        print("Cache of area is now dirty! EWW!")
+        print(
+            "Cache of area is now dirty! EWW! "
+            "(This is an _on_cache_dirty bind) "
+            )
 
 
 def timed_get_area(rect) -> tuple[int, float]:

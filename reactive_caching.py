@@ -24,7 +24,7 @@ import warnings as _warnings
 __version__ = "0.2.1"
 
 
-CacheRule: _typing.TypeAlias = \
+type CacheRule= \
     list[str] | \
     _typing.Literal["-all-"] | \
     _typing.Literal["-exposed-"]
@@ -48,7 +48,6 @@ class CachedClass:
     """
 
     _cache_rules: dict[_typing.Callable, CacheRule] = {}
-    _watch_rules: dict[_typing.Callable, CacheRule] = {}
 
     def __init_subclass__(cls) -> None:
         """Inherit or create empty, then configure caching rules for classes."""
@@ -105,7 +104,7 @@ class CachedClass:
         if not self._cache_alive:
             return
         if name in [ # Ignore names used by caching system
-            "_cache_rules", 
+            "_cached_rules", 
             "_cache_data", 
             "_cache_dirty_state", 
             "_cache_alive"
@@ -205,7 +204,6 @@ def on_attr_change(
     """
 
     def decorator(func: _SourceCallableType) -> _SourceCallableType:
-        func = _typing.cast(_BoundFunc, func)
         func.calc = func
         func._cache_rule = watched_attrs
         return func
