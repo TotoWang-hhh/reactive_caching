@@ -47,7 +47,7 @@ print("==================================================")
 
 rect = Rectangle()
 
-print(f"{rect._cached_rules=}")
+print(f"{rect._cache_rules=}")
 
 area, exe_time = timed_get_area(rect)
 print_result(1, rect, area, exe_time)

@@ -30,7 +30,16 @@ class CachedClass():
     Must set `self._cache_initialized` to `True` after `__init__()`
     """
 
-    _cached_rules: dict[str, list | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]] = {}
+    _cache_rules: \
+        dict[
+            _typing.Callable, 
+            list | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]
+            ] = {}
+    _watch_rules: \
+        dict[
+            _typing.Callable, 
+            list | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]
+            ] = {}
 
     def __init_subclass__(cls) -> None:
         """Inherit or create empty, then configure caching rules for classes."""
@@ -39,30 +48,31 @@ class CachedClass():
         if hasattr(cls, "_inherit_cache_rule"):
             if isinstance(cls._inherit_cache_rule, bool):   # type: ignore
                 inherit = cls._inherit_cache_rule           # type: ignore
-        cls._cached_rules: dict[str, list | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]]
+        cls._cache_rules: \
+            dict[_typing.Callable, list | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]]
         if inherit:
             inherited_rules = {}
             for parent_cls in reversed(cls.__mro__[1:]):
                 # Override rules, the first parent class is the most prior, and last overrided
                 if issubclass(parent_cls, CachedClass):
-                    inherited_rules.update(parent_cls._cached_rules)
-            cls._cached_rules = inherited_rules
+                    inherited_rules.update(parent_cls._cache_rules)
+            cls._cache_rules = inherited_rules
         else:
-            cls._cached_rules = {}
+            cls._cache_rules = {}
         ## Add config of current class
         for name, obj in cls.__dict__.items():
             if isinstance(obj, property):
                 func = obj.fget
                 if hasattr(func, "_cache_rule"):
-                    cls._cached_rules[name] = func._cache_rule # type: ignore
+                    cls._cache_rules[func] = func._cache_rule # type: ignore
 
     def __init__(self) -> None:
         """Initialize a cache class."""
         self._cache_alive: bool = False
-        self._cache_dirty_state: dict[str, bool] = {}
-        self._cache_data: dict[str, _typing.Any] = {}
+        self._cache_dirty_state: dict[_typing.Callable, bool] = {}
+        self._cache_data: dict[_typing.Callable, _typing.Any] = {}
 
-        for prop in type(self)._cached_rules.keys():
+        for prop in type(self)._cache_rules.keys():
             self._cache_dirty_state[prop] = True
             self._cache_data[prop] = None
 
@@ -90,29 +100,29 @@ class CachedClass():
             "_cache_alive"
             ]:
             return
-        for prop in self._cached_rules.keys():
+        for prop in self._cache_rules.keys():
             if self._cache_dirty_state[prop]:
                 continue # If is already dirty, then can skip
                 # Because no need to flag a prop cache that is already dirty as dirty again
-            match self._cached_rules[prop]:
+            match self._cache_rules[prop]:
                 case "-all-":
                     self._cache_dirty_state[prop] = True
-                    self._on_cache_dirty(prop)
+                    self._on_cache_dirty(prop.__name__)
                 case "-exposed-":
                     if not name.startswith("_"):
                         self._cache_dirty_state[prop] = True
-                        self._on_cache_dirty(prop)
+                        self._on_cache_dirty(prop.__name__)
                 case list() | tuple():
-                    if name in self._cached_rules[prop]:
+                    if name in self._cache_rules[prop]:
                         self._cache_dirty_state[prop] = True
-                        self._on_cache_dirty(prop)
+                        self._on_cache_dirty(prop.__name__)
                 case _:
                     _warnings.warn(
-                        f"Cache rule {self._cached_rules[prop]} neither a valid list nor valid "
+                        f"Cache rule {self._cache_rules[prop]} neither a valid list nor valid "
                         "keyword, check spelling! The cache will be regarded as dirty anyway."
                         )
                     self._cache_dirty_state[prop] = True
-                    self._on_cache_dirty(prop)
+                    self._on_cache_dirty(prop.__name__)
                     return
 
     def destroy_cache(self):
@@ -140,13 +150,15 @@ def cached_property(
     - **Keyword `-exposed-`:** All exposed attributes (those with name that does not starts 
         with `_`) will be watched. When any of their values is changed, the cache will be flagged 
         dirty.
+
+    :param watched_attrs: List of attributes to watch or a keyword, in other words, caching rule
     """
 
     PropType = _typing.TypeVar("PropType")
 
     def decorator(func: _typing.Callable[[CachedClass], PropType]) -> property:
 
-        func_name = func.__name__
+        # func_name = func.__name__
 
         def wrapper(self: CachedClass) -> PropType:
             if not self._cache_alive:
@@ -155,15 +167,32 @@ def cached_property(
                     "operation is not suggested and caching system will be bypassed."
                     )
                 return func(self)
-            if func_name not in self._cache_data:
+            if func not in self._cache_data:
                 return func(self)
-            if self._cache_dirty_state[func_name]:
+            if self._cache_dirty_state[func]:
                 # If cache in dirty state, re-calculate it
-                self._cache_data[func_name] = func(self)
-                self._cache_dirty_state[func_name] = False
-            return self._cache_data[func_name]
+                self._cache_data[func] = func(self)
+                self._cache_dirty_state[func] = False
+            return self._cache_data[func]
 
         wrapper._cache_rule = watched_attrs
         return property(wrapper)
+
+    return decorator
+
+
+_SourceCallableType = _typing.TypeVar("_SourceCallableType", bound = _typing.Callable)
+
+def on_attr_change(
+    watched_attrs: list[str] | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]
+    ) -> _typing.Callable[[_SourceCallableType], _SourceCallableType]:
+    """Carry out specific task when specific attributes changes.
+
+    :param watched_attrs: List of attributes to watch or a keyword, in other words, caching rule
+    """
+
+    def decorator(func: _SourceCallableType) -> _SourceCallableType:
+        pass
+        return func
 
     return decorator
