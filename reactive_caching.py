@@ -24,22 +24,31 @@ import warnings as _warnings
 __version__ = "0.2.1"
 
 
-class CachedClass():
+CacheRule: _typing.TypeAlias = \
+    list[str] | \
+    _typing.Literal["-all-"] | \
+    _typing.Literal["-exposed-"]
+
+
+@_typing.runtime_checkable
+class _BoundFunc(_typing.Protocol):
+    """Type representing any function bound to a caching rule."""
+
+    calc: _typing.Callable
+    _cache_rule: CacheRule
+    # _lazy: bool = True
+
+    def __call__(self, *args, **kwargs) -> _typing.Any: ...
+
+
+class CachedClass:
     """Caching ability of a class.
 
     Must set `self._cache_initialized` to `True` after `__init__()`
     """
 
-    _cache_rules: \
-        dict[
-            _typing.Callable, 
-            list | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]
-            ] = {}
-    _watch_rules: \
-        dict[
-            _typing.Callable, 
-            list | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]
-            ] = {}
+    _cache_rules: dict[_typing.Callable, CacheRule] = {}
+    _watch_rules: dict[_typing.Callable, CacheRule] = {}
 
     def __init_subclass__(cls) -> None:
         """Inherit or create empty, then configure caching rules for classes."""
@@ -48,8 +57,7 @@ class CachedClass():
         if hasattr(cls, "_inherit_cache_rule"):
             if isinstance(cls._inherit_cache_rule, bool):   # type: ignore
                 inherit = cls._inherit_cache_rule           # type: ignore
-        cls._cache_rules: \
-            dict[_typing.Callable, list | _typing.Literal["-all-"] | _typing.Literal["-exposed-"]]
+        cls._cache_rules: dict[_typing.Callable, CacheRule]
         if inherit:
             inherited_rules = {}
             for parent_cls in reversed(cls.__mro__[1:]):
@@ -60,11 +68,14 @@ class CachedClass():
         else:
             cls._cache_rules = {}
         ## Add config of current class
-        for name, obj in cls.__dict__.items():
+        for _, obj in cls.__dict__.items():
             if isinstance(obj, property):
-                func = obj.fget
-                if hasattr(func, "_cache_rule"):
-                    cls._cache_rules[func] = func._cache_rule # type: ignore
+                fget = obj.fget
+                if _typing.TYPE_CHECKING:
+                    fget = _typing.cast(function, fget)
+                if isinstance(fget, _BoundFunc):
+                    func = fget.calc
+                    cls._cache_rules[func] = fget._cache_rule # type: ignore
 
     def __init__(self) -> None:
         """Initialize a cache class."""
@@ -94,7 +105,7 @@ class CachedClass():
         if not self._cache_alive:
             return
         if name in [ # Ignore names used by caching system
-            "_cached_rules", 
+            "_cache_rules", 
             "_cache_data", 
             "_cache_dirty_state", 
             "_cache_alive"
@@ -175,7 +186,9 @@ def cached_property(
                 self._cache_dirty_state[func] = False
             return self._cache_data[func]
 
+        wrapper = _typing.cast(_BoundFunc, wrapper)
         wrapper._cache_rule = watched_attrs
+        wrapper.calc = func
         return property(wrapper)
 
     return decorator
@@ -192,7 +205,9 @@ def on_attr_change(
     """
 
     def decorator(func: _SourceCallableType) -> _SourceCallableType:
-        pass
+        func = _typing.cast(_BoundFunc, func)
+        func.calc = func
+        func._cache_rule = watched_attrs
         return func
 
     return decorator
