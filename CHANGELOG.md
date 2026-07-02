@@ -1,6 +1,13 @@
 # Changelog
 
-## 0.2.0 (Beta)
+## 0.2.2 (Beta)
+
+### Changed
+
+- Fixed some type errors, including changing `TypeVar` to `type` statement for `CacheRule` type.
+- Use functions themselves instead of their names as identifier in cache rules list, to avoid all functions identified as `wrapper` and share the same cache space.
+
+## 0.2.1 (Beta)
 
 ### Changed
 

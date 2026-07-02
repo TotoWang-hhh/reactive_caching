@@ -2,7 +2,7 @@
 
 > 2026 by rgzz666
 >
-> Latest: v0.2.1 (Beta)
+> Latest: v0.2.2 (Beta)
 >
 > [GitHub](https://github.com/TotoWang-hhh/reactive_caching) | [PyPI](https://pypi.org/project/reactive-caching/)
 
@@ -119,6 +119,13 @@ For code contribution, create a pull request.
 For bugs and feature requests, create an issue.
 
 For questions in usage or other discussions, use GitHub Discussions.
+
+## For Any Undocumented Details
+
+I apologize for the incompleteness of the document. Please consider the following solutions:
+
+1. Check later versions of the document, some details might be added to the document in later versions.
+2. Create an issue and ask me. This can remind me to add the details you asked to this document, and help completing the document.
 
 ---
 
